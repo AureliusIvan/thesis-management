@@ -1,0 +1,63 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-08-04 22:33:59.212206",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "column_break_dhds",
+  "lecturer",
+  "signed_document",
+  "hash",
+  "approval",
+  "position"
+ ],
+ "fields": [
+  {
+   "fieldname": "column_break_dhds",
+   "fieldtype": "Column Break",
+   "options": "user"
+  },
+  {
+   "fieldname": "lecturer",
+   "fieldtype": "Link",
+   "label": "Lecturer",
+   "options": "User"
+  },
+  {
+   "fieldname": "signed_document",
+   "fieldtype": "Attach",
+   "label": "Signed Document"
+  },
+  {
+   "fieldname": "hash",
+   "fieldtype": "Data",
+   "label": "Hash Value"
+  },
+  {
+   "default": "0",
+   "fieldname": "approval",
+   "fieldtype": "Check",
+   "label": "Approval"
+  },
+  {
+   "fieldname": "position",
+   "fieldtype": "Select",
+   "label": "Position",
+   "options": "Examiner\nAdvisor\nHead of Department"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-08-04 23:40:46.028273",
+ "modified_by": "Administrator",
+ "module": "Thesis Management",
+ "name": "Document Submission Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
