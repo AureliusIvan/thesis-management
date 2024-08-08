@@ -1,21 +1,32 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "format:{thesis_type}-{student_name}-{###}",
+ "beta": 1,
  "creation": "2024-08-04 21:52:09.292091",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "submission_info_section",
+  "posting_datetime",
   "section_break_pzgs",
   "amended_from",
   "student",
+  "student_name",
+  "nim",
+  "document_information_section",
+  "thesis_type",
+  "thesis_title",
   "thesis",
+  "track_approval_section",
   "document_submission_item",
-  "position"
+  "approval_percentage"
  ],
  "fields": [
   {
    "fieldname": "section_break_pzgs",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Student Information"
   },
   {
    "fieldname": "amended_from",
@@ -28,10 +39,12 @@
    "search_index": 1
   },
   {
+   "description": "Upload thesis with .pdf format",
    "fieldname": "thesis",
    "fieldtype": "Attach",
    "in_list_view": 1,
-   "label": "Thesis",
+   "label": "Thesis File",
+   "no_copy": 1,
    "reqd": 1
   },
   {
@@ -42,25 +55,76 @@
    "reqd": 1
   },
   {
+   "description": "List of examiner",
    "fieldname": "document_submission_item",
    "fieldtype": "Table",
    "label": "Document Submission Status",
    "options": "Document Submission Item"
   },
   {
-   "fieldname": "position",
+   "fieldname": "document_information_section",
+   "fieldtype": "Section Break",
+   "label": "Document Information"
+  },
+  {
+   "fieldname": "thesis_type",
    "fieldtype": "Select",
-   "label": "Position",
-   "options": "Examiner\nAdvisor\nHead of Department"
+   "label": "Thesis Type",
+   "options": "Intern Thesis\nFinal Thesis\nFinal Thesis Proposal",
+   "reqd": 1
+  },
+  {
+   "fieldname": "track_approval_section",
+   "fieldtype": "Section Break",
+   "label": "Track Approval"
+  },
+  {
+   "fieldname": "submission_info_section",
+   "fieldtype": "Section Break",
+   "label": "Submission Info"
+  },
+  {
+   "fieldname": "posting_datetime",
+   "fieldtype": "Datetime",
+   "label": "Posting Datetime"
+  },
+  {
+   "description": "E.g : Analisis Pengaruh Supervision, Operating Conditions, Co-workers terhadap Job Performance pada Karyawan PT XYZ. ",
+   "fieldname": "thesis_title",
+   "fieldtype": "Data",
+   "label": "Thesis Title",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "approval_percentage",
+   "fieldtype": "Percent",
+   "label": "Approval Percentage",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "student.full_name",
+   "fieldname": "student_name",
+   "fieldtype": "Data",
+   "label": "Student Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "nim",
+   "fieldtype": "Data",
+   "label": "NIM",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-08 12:35:11.533881",
+ "modified": "2024-08-09 01:20:35.060151",
  "modified_by": "Administrator",
  "module": "Thesis Management",
  "name": "Document Submission",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -89,5 +153,8 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
 }

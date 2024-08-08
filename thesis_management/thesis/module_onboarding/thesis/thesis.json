@@ -1,0 +1,26 @@
+{
+ "allow_roles": [
+  {
+   "role": "Student"
+  }
+ ],
+ "creation": "2024-08-09 00:38:07.628051",
+ "docstatus": 0,
+ "doctype": "Module Onboarding",
+ "documentation_url": "https://docs.erpnext.com/docs/user/manual/en/stock",
+ "idx": 0,
+ "is_complete": 0,
+ "modified": "2024-08-09 00:38:07.628051",
+ "modified_by": "Administrator",
+ "module": "Thesis",
+ "name": "Thesis",
+ "owner": "Administrator",
+ "steps": [
+  {
+   "step": "Company Set Up"
+  }
+ ],
+ "subtitle": "Internship Thesis, Final Thesis Proposal, and Final Thesis...",
+ "success_message": "The Thesis Module is all set up!",
+ "title": "Let's submit your Thesis!"
+}
