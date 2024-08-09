@@ -8,7 +8,9 @@
  "engine": "InnoDB",
  "field_order": [
   "submission_info_section",
+  "column_break_offc",
   "posting_datetime",
+  "status",
   "section_break_pzgs",
   "amended_from",
   "student",
@@ -31,6 +33,7 @@
   {
    "fieldname": "amended_from",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Amended From",
    "no_copy": 1,
    "options": "Document Submission",
@@ -51,13 +54,15 @@
    "fieldname": "student",
    "fieldtype": "Link",
    "label": "Student",
-   "options": "User",
+   "options": "Student",
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
    "description": "List of examiner",
    "fieldname": "document_submission_item",
    "fieldtype": "Table",
+   "in_filter": 1,
    "label": "Document Submission Status",
    "options": "Document Submission Item"
   },
@@ -70,7 +75,7 @@
    "fieldname": "thesis_type",
    "fieldtype": "Select",
    "label": "Thesis Type",
-   "options": "Intern Thesis\nFinal Thesis\nFinal Thesis Proposal",
+   "options": "\nInternship Thesis\nFinal Thesis Proposal\nFinal Thesis",
    "reqd": 1
   },
   {
@@ -79,48 +84,62 @@
    "label": "Track Approval"
   },
   {
+   "description": "Document submission related information. Will automatically generated after document submitted.",
    "fieldname": "submission_info_section",
    "fieldtype": "Section Break",
    "label": "Submission Info"
   },
   {
    "fieldname": "posting_datetime",
-   "fieldtype": "Datetime",
+   "fieldtype": "Date",
    "label": "Posting Datetime"
   },
   {
    "description": "E.g : Analisis Pengaruh Supervision, Operating Conditions, Co-workers terhadap Job Performance pada Karyawan PT XYZ. ",
    "fieldname": "thesis_title",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
    "label": "Thesis Title",
    "reqd": 1
   },
   {
    "allow_on_submit": 1,
    "default": "0",
+   "description": "This will automatically fetch data from table `Document Submission Status`.",
    "fieldname": "approval_percentage",
    "fieldtype": "Percent",
    "label": "Approval Percentage",
    "read_only": 1
   },
   {
-   "fetch_from": "student.full_name",
+   "fetch_from": "student.fullname",
    "fieldname": "student_name",
    "fieldtype": "Data",
    "label": "Student Name",
    "reqd": 1
   },
   {
+   "fetch_from": "student.nim",
    "fieldname": "nim",
    "fieldtype": "Data",
    "label": "NIM",
    "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nApproved\nRejected"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "column_break_offc",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-09 01:20:35.060151",
+ "modified": "2024-08-09 12:53:11.297163",
  "modified_by": "Administrator",
  "module": "Thesis Management",
  "name": "Document Submission",
@@ -146,6 +165,15 @@
    "if_owner": 1,
    "read": 1,
    "role": "Academics User",
+   "select": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "if_owner": 1,
+   "read": 1,
+   "role": "Student",
    "select": 1,
    "submit": 1,
    "write": 1
