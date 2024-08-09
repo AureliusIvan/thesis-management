@@ -1,0 +1,91 @@
+{
+ "actions": [],
+ "autoname": "format:{fullname}-{nidn}",
+ "creation": "2024-08-09 11:22:59.927117",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_19pr",
+  "amended_from",
+  "user",
+  "fullname",
+  "nidn",
+  "signature_section",
+  "signature"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_19pr",
+   "fieldtype": "Section Break",
+   "label": "Lecturer Information"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Lecturer",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User"
+  },
+  {
+   "fieldname": "nidn",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "NIDN",
+   "reqd": 1
+  },
+  {
+   "fieldname": "signature_section",
+   "fieldtype": "Section Break",
+   "label": "Signature"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "signature",
+   "fieldtype": "Attach Image",
+   "label": "Signature"
+  },
+  {
+   "fetch_from": "user.full_name",
+   "fieldname": "fullname",
+   "fieldtype": "Data",
+   "label": "Full name ",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-08-09 11:36:54.608566",
+ "modified_by": "Administrator",
+ "module": "Thesis Management",
+ "name": "Lecturer",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

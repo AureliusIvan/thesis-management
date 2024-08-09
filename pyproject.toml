@@ -1,13 +1,14 @@
 [project]
 name = "thesis_management"
 authors = [
-    { name = "Aurelius Ivan Wijaya", email = "aureliusivanwijaya@gmail.com"}
+    { name = "Aurelius Ivan Wijaya", email = "aureliusivanwijaya@gmail.com" }
 ]
 description = "Manage Thesis approval and flow"
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]
 dependencies = [
+    "ed25519~=1.5",
     # "frappe~=15.0.0" # Installed and managed by bench.
 ]
 
