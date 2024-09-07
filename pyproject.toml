@@ -9,6 +9,8 @@ readme = "README.md"
 dynamic = ["version"]
 dependencies = [
     "ed25519~=1.5",
+    "reportlab~=4.2.2",
+    "lxml~=5.3.0",
     # "frappe~=15.0.0" # Installed and managed by bench.
 ]
 

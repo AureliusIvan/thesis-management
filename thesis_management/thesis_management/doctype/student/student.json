@@ -54,7 +54,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-09 11:34:26.186363",
+ "modified": "2024-08-09 13:47:52.277057",
  "modified_by": "Administrator",
  "module": "Thesis Management",
  "name": "Student",
@@ -73,6 +73,16 @@
    "share": 1,
    "submit": 1,
    "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Student",
+   "select": 1,
+   "share": 1
   }
  ],
  "sort_field": "modified",
