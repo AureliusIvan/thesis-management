@@ -3,6 +3,7 @@
 
 import frappe
 import ed25519
+import fitz  # PyMuPDF
 from frappe.model.document import Document
 from PyPDF2 import PdfReader, PdfWriter
 from reportlab.pdfgen import canvas
@@ -55,40 +56,19 @@ class DocumentSubmission(Document):
         # signature_image_path = frappe.get_site_path("private", "files", "signature.png")  # Adjust path as necessary
 
         # Coordinates to place the signature on the PDF (example coordinates)
-        x, y = 100, 100
+        x, y = 390, 250
 
         # Sign the PDF by overlaying the signature image and saving the result
         signed_thesis_pdf_path = insert_image_on_page(
             thesis_pdf_path,
             signature_image_path,
             output_filename,
-            page_number=0, x=x, y=y
+            page_number=3, x=x, y=y
         )
 
         # Update the signed_thesis field with the signed PDF file path (relative path to private files)
         self.signed_thesis = signed_thesis_pdf_path
         self.save()
-
-
-def on_cancel(self):
-    """
-    On Cancel Document Submission
-    """
-    pass
-
-
-def sign(self):
-    """
-    Sign Document Submission
-    """
-    pass
-
-
-def verify(self):
-    """
-    Verify Document Submission
-    """
-    pass
 
 
 def create_image_overlay(image_path, page_width, page_height, x, y):
@@ -105,7 +85,7 @@ def create_image_overlay(image_path, page_width, page_height, x, y):
     img_width, img_height = img.size
 
     # Draw the image at the specified position (x, y) with given width and height
-    can.drawImage(image_path, x, y, width=200, height=200)
+    can.drawImage(image_path, x, y, width=100, height=100)
 
     can.showPage()
     can.save()
@@ -114,7 +94,13 @@ def create_image_overlay(image_path, page_width, page_height, x, y):
     return img_pdf
 
 
-def insert_image_on_page(input_pdf_path, image_path, output_filename, page_number=0, x=0, y=0):
+def insert_image_on_page(
+        input_pdf_path,
+        image_path,
+        output_filename,
+        page_number=0,
+        x=0,
+        y=0):
     """
     Insert an image (e.g., signature) onto a specified page of a PDF and save it to the private directory.
 
@@ -135,7 +121,14 @@ def insert_image_on_page(input_pdf_path, image_path, output_filename, page_numbe
     page_height = page.mediabox.height
 
     # Create the image overlay PDF (signature)
-    image_overlay_pdf = create_image_overlay(image_path, page_width, page_height, x, y)
+    image_overlay_pdf = create_image_overlay(
+        image_path,
+        page_width,
+        page_height,
+        x,
+        y
+    )
+
     image_overlay_reader = PdfReader(image_overlay_pdf)
 
     # Merge the image with the existing page
@@ -155,8 +148,58 @@ def insert_image_on_page(input_pdf_path, image_path, output_filename, page_numbe
     return relative_path
 
 
+def insert_image_with_transparency(
+        input_pdf_path,
+        image_path,
+        output_filename,
+        page_number=0,
+        x=0,
+        y=0):
+    """
+    Insert an image (with transparency support) onto a specified page of a PDF and save the output.
+
+    :param input_pdf_path: Path to the input PDF
+    :param image_path: Path to the image (e.g., PNG with transparency)
+    :param output_filename: The desired output filename (e.g., "signed_thesis.pdf")
+    :param page_number: The page on which to overlay the image (default: 0, first page)
+    :param x: The x-coordinate where the image will be placed
+    :param y: The y-coordinate where the image will be placed
+    :return: Path to the saved PDF file
+    """
+    # Open the PDF
+    pdf_document = fitz.open(input_pdf_path)
+    page = pdf_document.load_page(page_number)
+
+    # Open the image using PIL
+    img = Image.open(image_path)
+    img_width, img_height = img.size
+
+    # Convert the PIL image to a format fitz can use
+    image_bytes = img.tobytes("png")  # Ensure the image retains transparency
+
+    # Create a fitz pixmap (fitz handles transparency in images)
+    pix = fitz.Pixmap(
+        fitz.csRGB,
+        img_width,
+        img_height,
+        alpha=True,
+        samples=image_bytes
+    )
+
+    # Insert the image into the PDF at the given coordinates
+    page.insert_image(fitz.Rect(x, y, x + img_width, y + img_height), pixmap=pix)
+
+    # Save the modified PDF
+    output_pdf_path = f"/path/to/output/{output_filename}"
+    pdf_document.save(output_pdf_path)
+
+    pdf_document.close()
+
+    return output_pdf_path
+
+
 @frappe.whitelist()
-def approve_document_submission(docname):
+def approve(docname):
     """
     Approve Document Submission
     """
@@ -164,3 +207,14 @@ def approve_document_submission(docname):
     doc.status = "Approved"
     doc.save()
     frappe.msgprint("Document Submission Approved")
+
+
+@frappe.whitelist()
+def reject(docname):
+    """
+    Reject Document Submission
+    """
+    doc: Document = frappe.get_doc("Document Submission", docname)
+    doc.status = "Rejected"
+    doc.save()
+    frappe.msgprint("Document Submission Rejected")

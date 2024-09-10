@@ -12,6 +12,7 @@ dependencies = [
     "reportlab~=4.2.2",
     "lxml~=5.3.0",
     "PyPDF2~=3.0.1",
+    "PyMuPDF~=1.24.10"
     # "frappe~=15.0.0" # Installed and managed by bench.
 ]
 

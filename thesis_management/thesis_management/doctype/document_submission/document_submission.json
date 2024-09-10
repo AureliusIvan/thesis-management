@@ -56,6 +56,7 @@
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "label": "Student",
+   "no_copy": 1,
    "options": "Student",
    "reqd": 1
   },
@@ -117,6 +118,8 @@
    "fieldname": "student_name",
    "fieldtype": "Data",
    "label": "Student Name",
+   "no_copy": 1,
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -124,13 +127,19 @@
    "fieldname": "nim",
    "fieldtype": "Data",
    "label": "NIM",
+   "no_copy": 1,
+   "read_only": 1,
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
+   "bold": 1,
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "\nApproved\nRejected"
+   "no_copy": 1,
+   "options": "\nApproved\nRejected",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -142,13 +151,15 @@
    "fieldname": "signed_thesis",
    "fieldtype": "Attach",
    "ignore_user_permissions": 1,
-   "label": "Signed Thesis"
+   "label": "Signed Thesis",
+   "no_copy": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-10 00:32:06.367200",
+ "modified": "2024-09-10 08:47:17.831719",
  "modified_by": "Administrator",
  "module": "Thesis Management",
  "name": "Document Submission",

@@ -3,13 +3,20 @@
 
 
 frappe.ui.form.on('Document Submission', {
-
   refresh: function (frm) {
     // add custom button
     if (frm.doc.docstatus === 1) {
       frm.add_custom_button('Approve', () => {
-        frappe.msgprint('Approved');
-        // TODO: add approval logic from backend
+        frappe.call({
+          method: 'thesis_management.thesis_management.doctype.document_submission.document_submission.approve',
+          args: {
+            docname: frm.doc.name
+          },
+          callback: function (r) {
+            frappe.msgprint('Approved');
+            frm.reload_doc();
+          }
+        });
       }).addClass("btn-primary");
 
       frm.add_custom_button('Reject', () => {
@@ -37,8 +44,21 @@ frappe.ui.form.on('Document Submission', {
           size: 'small', // small, large, extra-large
           primary_action_label: 'Submit',
           primary_action(values) {
-            console.log(values);
             dialog.hide();
+            // trigger reject method
+            frappe.call({
+              method: 'thesis_management.thesis_management.doctype.document_submission.document_submission.reject',
+              args: {
+                docname: frm.doc.name,
+                subject: values.subject,
+                description: values.description,
+                attachment: values.attachment
+              },
+              callback: function (r) {
+                frappe.msgprint('Rejected');
+                frm.reload_doc();
+              }
+            });
           }
         });
         dialog.show();
