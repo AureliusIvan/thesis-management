@@ -1,6 +1,19 @@
 // Copyright (c) 2024, Aurelius Ivan Wijaya and contributors
 // For license information, please see license.txt
 
+frappe.listview_settings['Document Submission'] = {
+  get_indicator(doc) {
+    // customize indicator color
+    if (doc.status == "Approved") {
+      return [__("Approved"), "green", "status,=,Approved"];
+    } else if (doc.status == "Rejected") {
+      return [__("Rejected"), "red", "status,=,Rejected"];
+    } else {
+      return [__("Pending"), "orange", "status,=,Pending"];
+    }
+  },
+}
+
 
 frappe.ui.form.on('Document Submission', {
   refresh: function (frm) {

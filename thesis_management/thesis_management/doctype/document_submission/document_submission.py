@@ -11,9 +11,11 @@ from reportlab.lib.pagesizes import letter
 from io import BytesIO
 from PIL import Image
 import os
+import pikepdf
 
 
 class DocumentSubmission(Document):
+
     def validate(self):
         """
         Validate Document Submission
@@ -27,15 +29,13 @@ class DocumentSubmission(Document):
         """
         # Get the file URL from the "thesis" field
         thesis_file_url = self.thesis
+        base_file_name = os.path.basename(thesis_file_url)
 
         # Check if the file is stored in the private or public folder
         if thesis_file_url.startswith("/private/files"):
             thesis_pdf_path = frappe.get_site_path(thesis_file_url.strip("/"))
         elif thesis_file_url.startswith("/files"):
             thesis_pdf_path = frappe.get_site_path("public", thesis_file_url.strip("/files"))
-
-        # Define the output filename for the signed PDF
-        output_filename = f"signed_{os.path.basename(thesis_pdf_path)}-{self.name}-{self.student}.pdf"
 
         # Get the file URL from signature field om child table document_submission_item
         # TODO: multiple signature support
@@ -48,22 +48,33 @@ class DocumentSubmission(Document):
         elif signature_file_url.startswith("/files"):
             signature_image_path = frappe.get_site_path("public", signature_file_url.strip("/files"))
 
-        frappe.msgprint(f"Thesis PDF Path: {signature_image_path}")
-
-        # Coordinates to place the signature on the PDF (example coordinates)
-
-        # Path to the signature image (you should store this image in a known location)
-        # signature_image_path = frappe.get_site_path("private", "files", "signature.png")  # Adjust path as necessary
+        # embed_xml
+        # Create the XML metadata to be embedded in the PDF
+        xml_output_filename = f"{base_file_name}-{self.name}-{self.student}-xml.pdf"
+        xml_data = """
+        <?xml version="1.0" encoding="UTF-8"?>
+            <metadata>
+                <title>Embedded XML Example</title>
+                <author>Aurel</author>
+                <description>This XML data is embedded into the PDF as metadata.</description>
+            </metadata>
+        """
+        embed_xml(
+            thesis_pdf_path,
+            xml_output_filename,
+            xml_data
+        )
 
         # Coordinates to place the signature on the PDF (example coordinates)
         x, y = 390, 250
 
         # Sign the PDF by overlaying the signature image and saving the result
+        signed_pdf_path = f"{os.path.basename(thesis_pdf_path)}-{self.name}-{self.student}-signed.pdf"
         signed_thesis_pdf_path = insert_image_on_page(
-            thesis_pdf_path,
+            xml_output_filename,
             signature_image_path,
-            output_filename,
-            page_number=3, x=x, y=y
+            signed_pdf_path,
+            page_number=0, x=x, y=y
         )
 
         # Update the signed_thesis field with the signed PDF file path (relative path to private files)
@@ -148,54 +159,41 @@ def insert_image_on_page(
     return relative_path
 
 
-def insert_image_with_transparency(
-        input_pdf_path,
-        image_path,
-        output_filename,
-        page_number=0,
-        x=0,
-        y=0):
+def embed_xml(input_pdf_path, output_pdf_path, xml_metadata):
     """
-    Insert an image (with transparency support) onto a specified page of a PDF and save the output.
-
-    :param input_pdf_path: Path to the input PDF
-    :param image_path: Path to the image (e.g., PNG with transparency)
-    :param output_filename: The desired output filename (e.g., "signed_thesis.pdf")
-    :param page_number: The page on which to overlay the image (default: 0, first page)
-    :param x: The x-coordinate where the image will be placed
-    :param y: The y-coordinate where the image will be placed
-    :return: Path to the saved PDF file
+    Embed XML Signature in PDF
     """
-    # Open the PDF
-    pdf_document = fitz.open(input_pdf_path)
-    page = pdf_document.load_page(page_number)
+    # Load the input PDF using PyPDF2
+    reader = PdfReader(input_pdf_path)
+    writer = PdfWriter()
 
-    # Open the image using PIL
-    img = Image.open(image_path)
-    img_width, img_height = img.size
+    # Add all pages from the original PDF
+    for page_num in range(len(reader.pages)):
+        writer.add_page(reader.pages[page_num])
 
-    # Convert the PIL image to a format fitz can use
-    image_bytes = img.tobytes("png")  # Ensure the image retains transparency
+    # Create an output stream for writing the PDF
+    with open(output_pdf_path, "wb") as output_pdf_file:
+        writer.write(output_pdf_file)
 
-    # Create a fitz pixmap (fitz handles transparency in images)
-    pix = fitz.Pixmap(
-        fitz.csRGB,
-        img_width,
-        img_height,
-        alpha=True,
-        samples=image_bytes
-    )
+    # Add custom XML metadata using pikepdf, allowing overwriting of the input file
+    with pikepdf.open(output_pdf_path, allow_overwriting_input=True) as pdf:
+        # Insert XML metadata into the document info
+        pdf.docinfo['/XMLMetadata'] = xml_metadata
+        pdf.save(output_pdf_path)
 
-    # Insert the image into the PDF at the given coordinates
-    page.insert_image(fitz.Rect(x, y, x + img_width, y + img_height), pixmap=pix)
+    # Save the file to Frappe as a File document
+    with open(output_pdf_path, "rb") as pdf_file:
+        file_doc = frappe.get_doc({
+            "doctype": "File",
+            "file_name": output_pdf_path.split("/")[-1],  # Extract filename
+            "is_private": 1,  # Set to 0 for public files
+            "content": pdf_file.read()  # Read the PDF content and upload it
+        })
+        file_doc.insert()  # Insert the file record into the database
+        frappe.db.commit()  # Commit the transaction to save the file
 
-    # Save the modified PDF
-    output_pdf_path = f"/path/to/output/{output_filename}"
-    pdf_document.save(output_pdf_path)
+    return file_doc.name  # Return the name or ID of the saved file
 
-    pdf_document.close()
-
-    return output_pdf_path
 
 
 @frappe.whitelist()
@@ -218,3 +216,5 @@ def reject(docname):
     doc.status = "Rejected"
     doc.save()
     frappe.msgprint("Document Submission Rejected")
+
+

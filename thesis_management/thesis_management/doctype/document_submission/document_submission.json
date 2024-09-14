@@ -110,6 +110,7 @@
    "description": "This will automatically fetch data from table `Document Submission Status`.",
    "fieldname": "approval_percentage",
    "fieldtype": "Percent",
+   "hidden": 1,
    "label": "Approval Percentage",
    "read_only": 1
   },
@@ -159,7 +160,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-10 08:47:17.831719",
+ "modified": "2024-09-12 09:45:21.839606",
  "modified_by": "Administrator",
  "module": "Thesis Management",
  "name": "Document Submission",
