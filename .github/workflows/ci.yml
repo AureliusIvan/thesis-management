@@ -27,7 +27,7 @@ jobs:
         ports:
           - 11000:6379
       mariadb:
-        image: mariadb:11.5
+        image: mariadb:12.3
         env:
           MYSQL_ROOT_PASSWORD: root
         ports:
